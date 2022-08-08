@@ -53,8 +53,9 @@ function PluginImportToCDN(options: Options): Plugin[] {
         modules = [],
         prodUrl = 'https://cdn.jsdelivr.net/npm/{name}@{version}/{path}',
     } = options
-
-    let isBuild = false
+    // always want to generate scripts bot for prod and dev
+    // when in dev mode, we will use vite-plugin-externals to handler var import
+    let isBuild = true
 
     const data = modules.map((m) => {
         let v: Module
@@ -125,7 +126,6 @@ function PluginImportToCDN(options: Options): Plugin[] {
                 }
 
                 if (command === 'build') {
-                    isBuild = true
 
                     userConfig!.build!.rollupOptions = {
                         external: [...externalLibs],
@@ -133,8 +133,6 @@ function PluginImportToCDN(options: Options): Plugin[] {
                     }
 
 
-                } else {
-                    isBuild = false
                 }
 
                 return userConfig
